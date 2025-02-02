@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List with Tabs</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <button class="tab-btn active" data-tab="daily">Daily Plan</button>
+        <button class="tab-btn" data-tab="weekly">Weekly Plan</button>
+        <button class="tab-btn" data-tab="monthly">Monthly Plan</button>
+        <button class="tab-btn" data-tab="goals">Goals</button>
+      </nav>
+      <div class="note-editor">
+        <textarea
+          id="note-input"
+          placeholder="Write your note here..."></textarea>
+        <button id="add-note-btn">Add</button>
+      </div>
+      <div class="notes-list" id="notes-list"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
