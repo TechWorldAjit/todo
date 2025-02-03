@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 noteElement.classList.add('important');
             }
             noteElement.innerHTML = `
-                <p>${note.text || note}</p> <button class="delete-btn" data-index="${index}">🗹</button><button class="imp-btn" data-index="${index}">⦿</button>
+                <p>${note.text || note}</p> <button class="delete-btn" data-index="${index}">✓</button><button class="imp-btn" data-index="${index}">⦿</button>
             `;
             notesList.appendChild(noteElement);
         });
