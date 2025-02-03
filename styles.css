@@ -6,14 +6,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* height: 100vh; */
 }
 
 .container {
   background-color: #f4f4f900;
   padding: 20px;
   border-radius: 8px;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
   width: 400px;
   text-align: center;
 }
@@ -81,15 +79,22 @@ nav {
   position: relative;
   text-align: left;
 }
-.note .p {
+
+.note.important {
+  /* Style for important notes */
+  background-color: #ffde21;
+}
+
+.note p {
   margin: 0px;
 }
+
 .delete-btn {
   position: absolute;
-  top: 2.4px;
-  right: 2px;
-  background-color: #dc3545;
-  color: #fff;
+  top: 1.2px;
+  right: 1px;
+  background-color: #ffffff00;
+  color: #dc3545;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -98,10 +103,29 @@ nav {
 
 .delete-btn:hover {
   background-color: #c82333;
+  color: #fff;
+}
+
+.imp-btn {
+  /* Style for important button */
+  position: absolute;
+  top: 2px;
+  left: 2px; /* Adjust position as needed */
+  background-color: #ffde2100; /* Yellow color */
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.imp-btn:hover {
+  background-color: #ffde21;
 }
 
 div.note p {
   margin-top: 0px;
   margin-bottom: 0px;
   margin: 1px;
+  padding-left: 20px;
 }
