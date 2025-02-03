@@ -6,11 +6,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.querySelector('body');
     let activeTab = 'daily';
 
+    // Colors for each tab
     const tabColors = {
-        daily: 'rgba(0, 255, 0, 0.05)',
-        weekly: 'rgba(0, 0, 255, 0.05)',
-        monthly: 'rgba(255, 0, 0, 0.05)',
-        goals: 'rgba(255, 255, 0, 0.1)',
+        daily: '#1f1f1f',   // Soft dark teal
+        weekly: '#1f1f1f',  // Soft dark blue
+        monthly: '#1f1f1f', // Soft dark burgundy
+        goals: '#1f1f1f',   // Soft dark olive green
+    };
+
+    // Colors for buttons (Add button and active tab highlight)
+    const primaryColors = {
+        daily: '#00BD56',    // Green
+        weekly: '#2196F3',   // Blue
+        monthly: '#F93827',  // Purple
+        goals: '#FF9800',    // Orange
     };
 
     const loadNotes = () => {
@@ -23,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 noteElement.classList.add('important');
             }
             noteElement.innerHTML = `
-                <p>${note.text || note}</p> <button class="delete-btn" data-index="${index}">✓</button><button class="imp-btn" data-index="${index}">⦿</button>
+                <p>${note.text || note}</p> 
+                <button class="delete-btn" data-index="${index}">✓</button>
+                <button class="imp-btn" data-index="${index}" style="color: ${note.important ? 'black' : ''}">⦿</button>
             `;
             notesList.appendChild(noteElement);
         });
@@ -37,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const noteText = noteInput.value.trim();
         if (noteText !== '') {
             const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
-            notes.push({ text: noteText, important: false }); // Store as object with text and important
+            notes.push({ text: noteText, important: false });
             saveNotes(notes);
             loadNotes();
             noteInput.value = '';
@@ -51,25 +62,51 @@ document.addEventListener('DOMContentLoaded', () => {
             notes.splice(index, 1);
             saveNotes(notes);
             loadNotes();
-        } else if (e.target.classList.contains('imp-btn')) { // Important button click
+        } else if (e.target.classList.contains('imp-btn')) {
             const index = e.target.getAttribute('data-index');
             const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
             notes[index].important = !notes[index].important;
+
+            // Update the color of the button text when marked important
+            const impButton = e.target;
+            if (notes[index].important) {
+                impButton.style.color = 'black';  // Text turns black when important
+            } else {
+                impButton.style.color = '';  // Revert text color when not important
+            }
+
             saveNotes(notes);
             loadNotes();
         }
     });
 
+    const updateUI = () => {
+        body.style.backgroundColor = tabColors[activeTab];  // Set background color based on tab
+        addNoteBtn.style.backgroundColor = primaryColors[activeTab];  // Change "Add" button color
+        addNoteBtn.style.borderColor = primaryColors[activeTab];  // Border color for "Add" button
+
+        tabButtons.forEach(button => {
+            if (button.getAttribute('data-tab') === activeTab) {
+                button.classList.add('active');
+                button.style.backgroundColor = primaryColors[activeTab];  // Active tab color
+            } else {
+                button.classList.remove('active');
+                button.style.backgroundColor = '#333';  // Default color for inactive tabs
+            }
+        });
+    };
+
     tabButtons.forEach(button => {
         button.addEventListener('click', (e) => {
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
             activeTab = e.target.getAttribute('data-tab');
             loadNotes();
-            body.style.backgroundColor = tabColors[activeTab];
+            updateUI();  // Update UI elements based on the selected tab
         });
     });
 
+    // Initialize UI setup on page load
     loadNotes();
-    body.style.backgroundColor = tabColors[activeTab];
+    updateUI();
 });
+
+
