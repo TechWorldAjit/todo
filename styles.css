@@ -1,131 +1,75 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const noteInput = document.getElementById('note-input');
+    const addNoteBtn = document.getElementById('add-note-btn');
+    const notesList = document.getElementById('notes-list');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const body = document.querySelector('body');
+    let activeTab = 'daily';
 
-.container {
-  background-color: #f4f4f900;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  text-align: center;
-}
+    const tabColors = {
+        daily: 'rgba(0, 255, 0, 0.05)',
+        weekly: 'rgba(0, 0, 255, 0.05)',
+        monthly: 'rgba(255, 0, 0, 0.05)',
+        goals: 'rgba(255, 255, 0, 0.1)',
+    };
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
+    const loadNotes = () => {
+        const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
+        notesList.innerHTML = '';
+        notes.forEach((note, index) => {
+            const noteElement = document.createElement('div');
+            noteElement.classList.add('note');
+            if (note.important) {
+                noteElement.classList.add('important');
+            }
+            noteElement.innerHTML = `
+                <p>${note.text || note}</p> <button class="delete-btn" data-index="${index}">🗹</button><button class="imp-btn" data-index="${index}">⦿</button>
+            `;
+            notesList.appendChild(noteElement);
+        });
+    };
 
-.tab-btn {
-  padding: 10px;
-  background-color: #00000022;
-  color: #fff;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  flex: 1;
-  margin: 0 2px;
-}
+    const saveNotes = (notes) => {
+        localStorage.setItem(activeTab, JSON.stringify(notes));
+    };
 
-.tab-btn.active {
-  background-color: #28a745;
-}
+    addNoteBtn.addEventListener('click', () => {
+        const noteText = noteInput.value.trim();
+        if (noteText !== '') {
+            const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
+            notes.push({ text: noteText, important: false }); // Store as object with text and important
+            saveNotes(notes);
+            loadNotes();
+            noteInput.value = '';
+        }
+    });
 
-.note-editor {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
+    notesList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            const index = e.target.getAttribute('data-index');
+            const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
+            notes.splice(index, 1);
+            saveNotes(notes);
+            loadNotes();
+        } else if (e.target.classList.contains('imp-btn')) { // Important button click
+            const index = e.target.getAttribute('data-index');
+            const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
+            notes[index].important = !notes[index].important;
+            saveNotes(notes);
+            loadNotes();
+        }
+    });
 
-#note-input {
-  height: 100px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  resize: none;
-}
+    tabButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            activeTab = e.target.getAttribute('data-tab');
+            loadNotes();
+            body.style.backgroundColor = tabColors[activeTab];
+        });
+    });
 
-#add-note-btn {
-  padding: 10px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#add-note-btn:hover {
-  background-color: #218838;
-}
-
-.notes-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.note {
-  background-color: #f9f9f9;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 5px;
-  position: relative;
-  text-align: left;
-}
-
-.note.important {
-  /* Style for important notes */
-  background-color: #ffde21;
-}
-
-.note p {
-  margin: 0px;
-}
-
-.delete-btn {
-  position: absolute;
-  top: 1.2px;
-  right: 1px;
-  background-color: #ffffff00;
-  color: #dc3545;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.delete-btn:hover {
-  background-color: #c82333;
-  color: #fff;
-}
-
-.imp-btn {
-  /* Style for important button */
-  position: absolute;
-  top: 2px;
-  left: 2px; /* Adjust position as needed */
-  background-color: #ffde2100; /* Yellow color */
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.imp-btn:hover {
-  background-color: #ffde21;
-}
-
-div.note p {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin: 1px;
-  padding-left: 20px;
-}
+    loadNotes();
+    body.style.backgroundColor = tabColors[activeTab];
+});
