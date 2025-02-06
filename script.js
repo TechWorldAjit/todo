@@ -8,18 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Colors for each tab
     const tabColors = {
-        daily: '#1f1f1f',   // Soft dark teal
-        weekly: '#1f1f1f',  // Soft dark blue
-        monthly: '#1f1f1f', // Soft dark burgundy
-        goals: '#1f1f1f',   // Soft dark olive green
+        daily: '#1f1f1f',
+        weekly: '#1f1f1f',
+        monthly: '#1f1f1f',
+        goals: '#1f1f1f',
     };
 
     // Colors for buttons (Add button and active tab highlight)
     const primaryColors = {
-        daily: '#00BD56',    // Green
-        weekly: '#2196F3',   // Blue
-        monthly: '#F93827',  // Purple
-        goals: '#FF9800',    // Orange
+        daily: '#00BD56',
+        weekly: '#2196F3',
+        monthly: '#F93827',
+        goals: '#FF9800',
     };
 
     const loadNotes = () => {
@@ -59,9 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('delete-btn')) {
             const index = e.target.getAttribute('data-index');
             const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
-            notes.splice(index, 1);
-            saveNotes(notes);
-            loadNotes();
+            
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes.splice(index, 1);
+                saveNotes(notes);
+                loadNotes();
+            }
         } else if (e.target.classList.contains('imp-btn')) {
             const index = e.target.getAttribute('data-index');
             const notes = JSON.parse(localStorage.getItem(activeTab)) || [];
@@ -108,5 +111,3 @@ document.addEventListener('DOMContentLoaded', () => {
     loadNotes();
     updateUI();
 });
-
-
